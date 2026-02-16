@@ -3,5 +3,5 @@ We introduce a model-based deep-learning approach to solve finite-horizon contin
 
 How to run:
 python GPI-CBU_clean.py
-# or with a config file:
+or with a config file:
 python GPI-CBU_clean.py --config gpi_cbu_config.example.toml
