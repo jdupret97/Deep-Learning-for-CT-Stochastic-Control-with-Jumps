@@ -212,8 +212,6 @@ class LQRReference:
     """
     Cache H(t) by solving ODE once and building an interpolant.
     Also cache integral_{t}^{T} H(s) ds via precomputed trapezoid rule.
-
-    This replaces opt_H/value1/control1 and is much faster for repeated calls.
     """
 
     def __init__(self, physics: PhysicsParams, cov_j: np.ndarray):
@@ -274,7 +272,7 @@ class LQRReference:
 # -----------------------------
 
 class DenseNet(tf.keras.Model):
-    """Simple MLP with optional BatchNorm, used to replace BSPINN_* duplication."""
+    """Simple MLP with optional BatchNorm."""
 
     def __init__(self, width: int, depth: int, output_dim: int, use_batchnorm: bool = True):
         super().__init__()
@@ -380,10 +378,7 @@ def _fprime(
     t: tf.Tensor,
     sigma: tf.Tensor,
 ) -> tf.Tensor:
-    """
-    Vectorized variant of the original fprime:
-    sum_i V(x + h^2 * u / (2*dim_w) + h/sqrt(2) * sigma[:,i], t + h^2/(2*dim_w))
-    """
+
     batch = tf.shape(x)[0]
     dim_x = tf.shape(x)[1]
     dim_w = tf.shape(sigma)[1]
@@ -424,11 +419,7 @@ def pinn_loss_value(
     sigma: tf.Tensor,
     bc_weight: float,
 ) -> tf.Tensor:
-    """
-    Original pinn_loss1bis, but:
-    - no global variables
-    - h is constructed as a zero tensor and watched for derivatives
-    """
+
     x = tf.cast(x, tf.float32)
     t = tf.cast(t, tf.float32)
     e = tf.cast(e, tf.float32)
@@ -470,7 +461,7 @@ def pinn_loss_control(
     e: tf.Tensor,
     physics: PhysicsParams,
 ) -> tf.Tensor:
-    """Original pinn_loss2 (Hamiltonian minimization objective)."""
+
     x = tf.cast(x, tf.float32)
     t = tf.cast(t, tf.float32)
     e = tf.cast(e, tf.float32)
@@ -822,4 +813,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 
