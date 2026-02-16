@@ -1,0 +1,56 @@
+# Example config for GPI-CBU_clean.py
+
+[physics]
+T = 1.0
+lamb = 0.25
+theta = 1.0
+beta = 2.0
+dim_x = 100
+dim_w = 10
+mu_j = 0.0
+cov_j_max = 0.4
+sigma_scale = 0.3
+
+[model]
+kind = "dgm"         # "dgm" or "mlp"
+hidden_dim = 150
+n_layers = 3
+mlp_width = 128
+use_batchnorm = true
+
+[train]
+num_samples = 2048
+nc_samples = 2048
+buffer_mult = 64
+batch_size = 1024
+test_samples = 1000
+bc_weight = 45.0
+
+[[phases]]
+name = "warmup_adam"
+epochs = 10
+lr_value = 4e-5
+lr_control = 2e-4
+optimizer = "adam"
+grad_clip_norm = 50.0
+target_tau = 0.0
+log_every = 10
+
+[[phases]]
+name = "finetune_adagrad"
+epochs = 11000
+lr_value = 5e-3
+lr_control = 5e-3
+optimizer = "adagrad"
+grad_clip_norm = 50.0
+target_tau = 0.0
+log_every = 10
+
+[run]
+seed = 22
+use_mirrored_strategy = true
+save_weights = true
+weights_prefix = "1lqrw"
+make_plots = true
+plot_prefix = "LQR"
+device_log = false
